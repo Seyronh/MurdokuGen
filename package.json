@@ -16,7 +16,8 @@
     "build:types": "tsc -p tsconfig.build.json --declaration --declarationMap --emitDeclarationOnly --outDir dist/types",
     "build:cjs": "tsc -p tsconfig.cjs.json",
     "build:esm": "tsc -p tsconfig.esm.json",
-    "build": "npm run build:types && npm run build:cjs && npm run build:esm"
+    "build": "npm run build:types && npm run build:cjs && npm run build:esm",
+    "test:manual": "npm run build && node dist/cjs/index.js"
   },
   "keywords": [],
   "author": "seyronh",
