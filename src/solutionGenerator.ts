@@ -11,34 +11,16 @@ function shuffle<T>(items: T[]): T[] {
   return copy;
 }
 
-function solutionGenerator(
-  width: number,
-  height: number,
-  persons: number,
-): number[][] {
-  if (
-    !Number.isInteger(width) ||
-    !Number.isInteger(height) ||
-    !Number.isInteger(persons)
-  ) {
-    throw new TypeError("width, height and persons must be integers");
+function solutionGenerator(width: number, height: number): number[][] {
+  if (!Number.isInteger(width) || !Number.isInteger(height)) {
+    throw new TypeError("width and height must be integers");
   }
 
-  if (width <= 0 || height <= 0 || persons < 0) {
-    throw new RangeError(
-      "width and height must be > 0, and persons must be >= 0",
-    );
+  if (width <= 0 || height <= 0) {
+    throw new RangeError("width and height must be > 0");
   }
-
-  if (persons > Math.min(width, height)) {
-    throw new RangeError("No solution: persons must be <= min(width, height)");
-  }
-
+  const persons = Math.min(width, height);
   const board = Array.from({ length: height }, () => Array(width).fill(0));
-
-  if (persons === 0) {
-    return board;
-  }
 
   const usedRows = new Set<number>();
   const usedCols = new Set<number>();
