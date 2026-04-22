@@ -3,8 +3,6 @@ type Cell = {
   y: number;
 };
 
-const MIN_ROOM_SIZE = 3;
-
 function getNeighbors(
   x: number,
   y: number,
@@ -107,16 +105,20 @@ function zoneGenerator(
   width: number,
   height: number,
   rooms: number,
+  minRoomSize = 3,
 ): number[][] {
   if (
     !Number.isInteger(width) ||
     !Number.isInteger(height) ||
-    !Number.isInteger(rooms)
+    !Number.isInteger(rooms) ||
+    !Number.isInteger(minRoomSize)
   ) {
-    throw new TypeError("width, height and rooms must be integers");
+    throw new TypeError(
+      "width, height, rooms and minRoomSize must be integers",
+    );
   }
 
-  if (width <= 0 || height <= 0 || rooms <= 0) {
+  if (width <= 0 || height <= 0 || rooms <= 0 || minRoomSize <= 0) {
     return [];
   }
 
@@ -126,7 +128,7 @@ function zoneGenerator(
     throw new RangeError("rooms cannot be greater than width * height");
   }
 
-  if (rooms * MIN_ROOM_SIZE > totalCells) {
+  if (rooms * minRoomSize > totalCells) {
     throw new RangeError(
       "rooms * minimum room size cannot be greater than width * height",
     );
@@ -172,7 +174,7 @@ function zoneGenerator(
       const underfilledRooms: number[] = [];
 
       for (let room = 0; room < rooms; room++) {
-        if ((roomSizes[room] ?? 0) < MIN_ROOM_SIZE) {
+        if ((roomSizes[room] ?? 0) < minRoomSize) {
           underfilledRooms.push(room);
         }
       }
