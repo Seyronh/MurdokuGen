@@ -28,15 +28,19 @@ for (let i = 0; i < 3; i++) {
 */
 import solutionGenerator from "./solutionGenerator";
 import zoneGenerator from "./zoneGenerator";
+import obstaclesGenerator from "./obstaclesGenerator";
 
-const width = 8;
-const height = 8;
-const persons = 8;
-const zones = 5;
+const width = 6;
+const height = 6;
+const persons = 6;
+const zones = 4;
+const obstaclesCount = 10;
 
 for (let i = 0; i < 3; i++) {
   const map = zoneGenerator(width, height, zones);
   const solution = solutionGenerator(width, height, persons);
+  const obstacleMap = obstaclesGenerator(map, solution, obstaclesCount);
+
   let mapStr = "";
   for (let r = 0; r < height; r++) {
     let rowStr = "";
@@ -44,6 +48,10 @@ for (let i = 0; i < 3; i++) {
       const cell = map[r]![c]!;
       if (solution[r]![c] === 1) {
         rowStr += "👤";
+        continue;
+      }
+      if (obstacleMap[r]![c] === 1) {
+        rowStr += "🟫";
         continue;
       }
       if (cell == 0) {
