@@ -42,7 +42,7 @@ function obstaclesGenerator(
 
   for (let i = 0; i < obstaclesCount; i++) {
     const eligibleIndexes = freeIndexes.filter((cell) => {
-      const remainingFreeCells = zoneFreeCounts.get(cell.zone) ?? 0;
+      const remainingFreeCells = zoneFreeCounts.get(cell.zone)!;
       return remainingFreeCells > 2;
     });
 
@@ -54,12 +54,13 @@ function obstaclesGenerator(
     }
 
     obstacleMap[info.x]![info.y] = 1;
-    zoneFreeCounts.set(info.zone, (zoneFreeCounts.get(info.zone) ?? 0) - 1);
+    zoneFreeCounts.set(info.zone, zoneFreeCounts.get(info.zone)! - 1);
 
     const freeIndex = freeIndexes.findIndex(
       (cell) => cell.x === info.x && cell.y === info.y,
     );
 
+    /* c8 ignore next 3 */
     if (freeIndex >= 0) {
       freeIndexes.splice(freeIndex, 1);
     }

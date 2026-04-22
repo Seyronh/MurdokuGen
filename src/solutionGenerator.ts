@@ -35,9 +35,17 @@ function solutionGenerator(width: number, height: number): number[][] {
     const remainingRows = rowOrder.filter((row) => !usedRows.has(row));
 
     for (const row of remainingRows) {
+      if (!Number.isInteger(row) || row < 0 || row >= height) {
+        continue;
+      }
+
       const cols = shuffle(Array.from({ length: width }, (_, i) => i));
 
       for (const col of cols) {
+        if (!Number.isInteger(col) || col < 0 || col >= width) {
+          continue;
+        }
+
         if (usedCols.has(col)) {
           continue;
         }
