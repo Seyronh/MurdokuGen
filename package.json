@@ -1,7 +1,7 @@
 {
   "name": "murdokugen",
   "version": "1.0.0",
-  "description": "",
+  "description": "TypeScript library to generate Murdoku boards and semantic hints with zones, solutions, and obstacles",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "types": "dist/types/index.d.ts",
@@ -20,9 +20,15 @@
     "test": "vitest run",
     "test:coverage": "vitest run --coverage"
   },
-  "keywords": [],
+  "keywords": [
+    "murdokugen",
+    "typescript",
+    "murdoku",
+    "sudoku",
+    "mistery"
+  ],
   "author": "seyronh",
-  "license": "ISC",
+  "license": "AGPL-3.0",
   "packageManager": "pnpm@10.33.0",
   "devDependencies": {
     "@types/node": "^25.6.0",
