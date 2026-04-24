@@ -1,59 +1,62 @@
 # MurdokuGen
 
-A library that generates Mordokus maps with the solutions
-ejemplo:
-import solutionGenerator from "./solutionGenerator";
-import zoneGenerator from "./zoneGenerator";
-import obstaclesGenerator from "./obstaclesGenerator";
+TypeScript library to generate Murdoku boards and semantic hints.
+
+It produces three aligned maps:
+
+- `zoneMap`: zone id per cell (`0..n`)
+- `solutionMap`: people placement (`0` empty, `1` person)
+- `obstacleMap`: blocked cells (`0` free, `1` obstacle)
+
+## Installation
+
+```bash
+npm install murdokugen
+```
+
+## Quick Start
+
+```ts
+import generateMurdoku from "murdokugen";
 
 const width = 6;
 const height = 6;
-const persons = 6;
-const zones = 4;
-const obstaclesCount = 10;
+const zonesCount = 4;
+const obstaclesCount = 8;
 
-for (let i = 0; i < 3; i++) {
-const map = zoneGenerator(width, height, zones);
-const solution = solutionGenerator(width, height, persons);
-const obstacleMap = obstaclesGenerator(map, solution, obstaclesCount);
+const { zoneMap, solutionMap, obstacleMap } = generateMurdoku(
+  width,
+  height,
+  zonesCount,
+  obstaclesCount,
+);
 
-let mapStr = "";
-for (let r = 0; r < height; r++) {
-let rowStr = "";
-for (let c = 0; c < width; c++) {
-const cell = map[r]![c]!;
-if (solution[r]![c] === 1) {
-rowStr += "👤";
-continue;
-}
-if (obstacleMap[r]![c] === 1) {
-rowStr += "🟫";
-continue;
-}
-if (cell == 0) {
-rowStr += "🟦";
-} else if (cell == 1) {
-rowStr += "🟩";
-} else if (cell == 2) {
-rowStr += "🟨";
-} else if (cell == 3) {
-rowStr += "🟧";
-} else if (cell == 4) {
-rowStr += "🟥";
-} else {
-rowStr += "⬛";
-}
-}
-rowStr += "\n";
-mapStr += rowStr;
-}
-console.log(mapStr);
-}
+console.log(zoneMap, solutionMap, obstacleMap);
+```
 
-## Hints system
+## API
 
-The library can generate semantic hints with no fixed language.
-You can map person/zone ids to your own labels and text templates.
+### `generateMurdoku(width, height, zonesCount, obstaclesCount)`
+
+Returns:
+
+```ts
+{
+  zoneMap: number[][];
+  solutionMap: number[][];
+  obstacleMap: number[][];
+}
+```
+
+Behavior summary:
+
+- `solutionMap` places `min(width, height)` people (`1`s), with at most one person per row and per column.
+- `obstacleMap` always keeps people cells blocked (`1`) and adds extra obstacles respecting zone limits.
+- Zone generation enforces contiguous zones and validates impossible inputs.
+
+## Hint System
+
+The library can generate language-agnostic hints and then format them with your own labels/templates.
 
 ```ts
 import generateMurdoku, {
@@ -70,6 +73,7 @@ const customHintPlugin: HintGeneratorPlugin = {
   id: "custom-zone-focus",
   generate: (context) => {
     const zoneZeroCount = context.personsByZone.get(0)?.length ?? 0;
+
     return [
       {
         id: "",
@@ -93,20 +97,65 @@ const hints = generateHints(zoneMap, solutionMap, obstacleMap, {
     HintType.AdjacentObstacle,
     HintType.CardinalRelation,
   ],
+  difficulty: "mixed",
+  includeBuiltIns: true,
+  deduplicate: true,
+  strictMode: false,
 });
 
 for (const hint of hints) {
   const text = formatHint(hint, {
-    personLabel: (personId) => `Persona ${personId}`,
-    zoneLabel: (zoneId) => `Zona ${zoneId}`,
+    personLabel: (personId) => `Person ${personId}`,
+    zoneLabel: (zoneId) => `Zone ${zoneId}`,
     directionLabel: (direction) => {
-      if (direction === Direction.North) return "norte";
-      if (direction === Direction.South) return "sur";
-      if (direction === Direction.East) return "este";
-      return "oeste";
+      if (direction === Direction.North) return "north";
+      if (direction === Direction.South) return "south";
+      if (direction === Direction.East) return "east";
+      return "west";
     },
   });
 
-  console.log(text);
+  console.log(hint.id, text);
 }
 ```
+
+### Built-in hint types
+
+- `HintType.SameZone`
+- `HintType.ZoneCount`
+- `HintType.AdjacentObstacle`
+- `HintType.CardinalRelation`
+
+### `generateHints(..., options)`
+
+Options:
+
+- `hintCount?: number`
+- `allowedTypes?: HintType[]`
+- `difficulty?: "easy" | "medium" | "hard" | "mixed"`
+- `includeBuiltIns?: boolean` (default `true`)
+- `plugins?: HintGeneratorPlugin[]`
+- `strictMode?: boolean` (default `false`)
+- `deduplicate?: boolean` (default `true`)
+- `random?: () => number`
+
+### `formatHint(hint, context)`
+
+Formatting context:
+
+- `personLabel?: (personId: number) => string`
+- `zoneLabel?: (zoneId: number) => string`
+- `directionLabel?: (direction: Direction) => string`
+- `templates?: Partial<Record<HintType, (hint: Hint) => string>>`
+
+## Development
+
+```bash
+npm run build
+npm test
+npm run test:coverage
+```
+
+## License
+
+ISC
