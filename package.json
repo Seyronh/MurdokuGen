@@ -27,6 +27,13 @@
     "sudoku",
     "mistery"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Seyronh/MurdokuGen"
+  },
+  "bugs": {
+    "url": "https://github.com/Seyronh/MurdokuGen/issues"
+  },
   "author": "seyronh",
   "license": "AGPL-3.0",
   "packageManager": "pnpm@10.33.0",
