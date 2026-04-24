@@ -1,4 +1,5 @@
 import obstaclesGenerator from "./obstaclesGenerator";
+import { formatHint, generateHints } from "./hintsGenerator";
 import solutionGenerator from "./solutionGenerator";
 import zoneGenerator from "./zoneGenerator";
 
@@ -15,3 +16,16 @@ function generateMurdoku(
   return { zoneMap, solutionMap, obstacleMap };
 }
 export default generateMurdoku;
+export { generateHints, formatHint };
+export {
+  Direction,
+  HintType,
+  type GenerateHintsOptions,
+  type Hint,
+  type HintCoordinate,
+  type HintDifficulty,
+  type HintFormatterContext,
+  type HintGenerationContext,
+  type HintGeneratorPlugin,
+  type PersonPosition,
+} from "./hintTypes";

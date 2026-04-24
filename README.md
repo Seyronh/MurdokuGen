@@ -49,3 +49,64 @@ mapStr += rowStr;
 }
 console.log(mapStr);
 }
+
+## Hints system
+
+The library can generate semantic hints with no fixed language.
+You can map person/zone ids to your own labels and text templates.
+
+```ts
+import generateMurdoku, {
+  Direction,
+  HintType,
+  formatHint,
+  generateHints,
+  type HintGeneratorPlugin,
+} from "murdokugen";
+
+const { zoneMap, solutionMap, obstacleMap } = generateMurdoku(6, 6, 4, 6);
+
+const customHintPlugin: HintGeneratorPlugin = {
+  id: "custom-zone-focus",
+  generate: (context) => {
+    const zoneZeroCount = context.personsByZone.get(0)?.length ?? 0;
+    return [
+      {
+        id: "",
+        type: HintType.ZoneCount,
+        difficulty: "easy",
+        payload: {
+          zoneId: 0,
+          personCount: zoneZeroCount,
+        },
+      },
+    ];
+  },
+};
+
+const hints = generateHints(zoneMap, solutionMap, obstacleMap, {
+  hintCount: 8,
+  plugins: [customHintPlugin],
+  allowedTypes: [
+    HintType.SameZone,
+    HintType.ZoneCount,
+    HintType.AdjacentObstacle,
+    HintType.CardinalRelation,
+  ],
+});
+
+for (const hint of hints) {
+  const text = formatHint(hint, {
+    personLabel: (personId) => `Persona ${personId}`,
+    zoneLabel: (zoneId) => `Zona ${zoneId}`,
+    directionLabel: (direction) => {
+      if (direction === Direction.North) return "norte";
+      if (direction === Direction.South) return "sur";
+      if (direction === Direction.East) return "este";
+      return "oeste";
+    },
+  });
+
+  console.log(text);
+}
+```
