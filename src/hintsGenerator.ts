@@ -114,6 +114,7 @@ function buildContext(
 function shuffleInPlace<T>(items: T[], random: () => number): void {
   for (let i = items.length - 1; i > 0; i--) {
     const rawIndex = Math.floor(random() * (i + 1));
+    // c8 ignore next - defensive check: Math.floor always returns an integer in valid range
     if (!Number.isInteger(rawIndex) || rawIndex < 0 || rawIndex > i) {
       continue;
     }
@@ -134,6 +135,7 @@ function makeDirectionalHint(
 
   if (subject.col === reference.col) {
     const distance = Math.abs(subject.row - reference.row);
+    // c8 ignore next - defensive check: different persons can't have distance 0
     if (distance === 0) return undefined;
 
     return {
@@ -152,6 +154,7 @@ function makeDirectionalHint(
 
   if (subject.row === reference.row) {
     const distance = Math.abs(subject.col - reference.col);
+    // c8 ignore next - defensive check: different persons can't have distance 0
     if (distance === 0) return undefined;
 
     return {
@@ -288,10 +291,12 @@ const sameZonePlugin: HintGeneratorPlugin = {
 
       for (let i = 0; i < personIds.length; i++) {
         const personA = personIds[i];
+        // c8 ignore next - defensive check: array always has defined elements
         if (personA === undefined) continue;
 
         for (let j = i + 1; j < personIds.length; j++) {
           const personB = personIds[j];
+          // c8 ignore next - defensive check: array always has defined elements
           if (personB === undefined) continue;
 
           hints.push({
@@ -401,10 +406,12 @@ const cardinalRelationPlugin: HintGeneratorPlugin = {
 
     for (let i = 0; i < context.persons.length; i++) {
       const subject = context.persons[i];
+      // c8 ignore next - defensive check: array always has defined elements
       if (!subject) continue;
 
       for (let j = 0; j < context.persons.length; j++) {
         const reference = context.persons[j];
+        // c8 ignore next - defensive check: array always has defined elements
         if (!reference) continue;
 
         const hint = makeDirectionalHint(subject, reference);
