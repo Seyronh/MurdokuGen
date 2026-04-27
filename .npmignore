@@ -1,6 +1,8 @@
 *
 !dist/
 !dist/**
+dist/**/*.map
+dist/**/*.d.ts.map
 !package.json
 !README.md
 !LICENSE
